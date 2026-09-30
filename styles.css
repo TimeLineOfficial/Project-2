@@ -272,36 +272,99 @@ body {
   box-sizing: border-border;
 }
 
-select.form-control {
-  text-overflow: ellipsis;
+/* Custom Accessible Select Component */
+.custom-select-container {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+}
+
+.custom-select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 100%;
+  cursor: pointer;
+  text-align: left;
+  user-select: none;
+  background-color: var(--color-card-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.custom-select-trigger .selected-text {
   white-space: nowrap;
   overflow: hidden;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 16px;
-  padding-right: 36px;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 20px);
 }
 
-select.form-control option {
-  background-color: #1f2937;
-  color: #f9fafb;
-  font-size: 0.875rem;
-  padding: 8px;
-  max-width: 100%;
-  word-break: break-word;
+.custom-select-trigger .select-arrow {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 8px;
 }
 
-.form-control:hover {
-  border-color: var(--color-border-hover);
-}
-
-.form-control:focus {
+.custom-select-container.open .custom-select-trigger {
   border-color: var(--color-accent);
+}
+
+.custom-select-container.open .select-arrow {
+  transform: rotate(180deg);
+  color: var(--color-accent);
+}
+
+.custom-select-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 100%;
   background-color: #111827;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.75);
+  z-index: 100;
+  max-height: 240px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.custom-option {
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  outline: none;
+}
+
+.custom-option:hover,
+.custom-option:focus {
+  background-color: var(--color-card-secondary);
+  color: var(--color-accent);
+}
+
+.custom-option.active {
+  background-color: var(--color-accent-subtle);
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+.hidden-select {
+  position: absolute !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
 }
 
 /* Unhappy Path: Invalid Field Error Styling */
@@ -779,61 +842,91 @@ select.form-control option {
 }
 
 /* ==========================================
-   Mobile Phone Responsive & Overflow Fixes (< 640px)
+   Mobile Phone Responsive & Compact Fixes (< 640px)
    ========================================== */
 @media (max-width: 639px) {
   .container {
-    padding-left: 12px;
-    padding-right: 12px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
   .app-header {
-    padding-top: 12px;
-    padding-bottom: 12px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .brand {
+    gap: 8px;
   }
 
   .brand-icon {
-    width: 36px;
-    height: 36px;
-    font-size: 1rem;
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+    border-radius: 6px;
   }
 
   .brand-title {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
+    line-height: 1.1;
   }
 
   .brand-subtitle {
-    font-size: 0.6875rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.02em;
   }
 
   .status-badge {
-    padding: 2px 8px;
-    font-size: 0.6875rem;
+    padding: 2px 6px;
+    font-size: 0.625rem;
   }
 
   .main-layout {
-    padding-top: var(--space-md);
-    padding-bottom: var(--space-xl);
-    gap: var(--space-md);
+    padding-top: 8px;
+    padding-bottom: 20px;
+    gap: 10px;
   }
 
   .controls-card {
-    padding: var(--space-md);
+    padding: 10px 12px;
     border-radius: var(--radius-md);
-    gap: var(--space-md);
+    gap: 8px;
   }
 
   .section-title {
-    font-size: 1.15rem;
+    font-size: 0.95rem;
+    line-height: 1.2;
   }
 
+  /* Hide verbose paragraph on mobile so event cards are immediately visible */
   .section-desc {
-    font-size: 0.8125rem;
+    display: none;
   }
 
   .search-filter-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 8px;
+  }
+
+  .input-label {
+    font-size: 0.6875rem;
+    margin-bottom: 2px;
+  }
+
+  .form-control,
+  .custom-select-trigger {
+    padding: 8px 10px;
+    font-size: 0.8125rem;
+    height: 36px;
+  }
+
+  .custom-select-dropdown {
+    max-height: 180px;
+  }
+
+  .custom-option {
+    padding: 8px 10px;
+    font-size: 0.78rem;
   }
 
   .category-pills {
@@ -841,34 +934,51 @@ select.form-control option {
     flex-wrap: nowrap;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: 6px;
-    gap: 6px;
+    padding-bottom: 2px;
+    gap: 4px;
     max-width: 100%;
   }
 
   .pill-btn {
     flex-shrink: 0;
-    padding: 6px 12px;
-    font-size: 0.75rem;
+    padding: 4px 8px;
+    font-size: 0.6875rem;
   }
 
   .events-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin-top: 2px;
+  }
+
+  .events-count-title {
+    font-size: 0.95rem;
+  }
+
+  .count-badge {
+    padding: 1px 6px;
+    font-size: 0.6875rem;
+  }
+
+  #sim-slow-btn {
+    padding: 4px 8px;
+    font-size: 0.6875rem;
   }
 
   .event-card {
-    padding: var(--space-md);
+    padding: 12px;
     border-radius: var(--radius-md);
+    gap: 10px;
   }
 
   .event-title {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .modal-backdrop {
-    padding: 10px;
+    padding: 8px;
   }
 
   .modal-card {
@@ -877,17 +987,17 @@ select.form-control option {
   }
 
   .modal-header {
-    padding: var(--space-md);
+    padding: 12px;
   }
 
   .modal-body {
-    padding: var(--space-md);
+    padding: 12px;
     max-height: 80vh;
   }
 
   .modal-footer {
     flex-direction: column-reverse;
-    gap: 8px;
+    gap: 6px;
   }
 
   .modal-footer .btn {
@@ -895,14 +1005,14 @@ select.form-control option {
   }
 
   .toast-container {
-    left: 12px;
-    right: 12px;
-    bottom: 16px;
+    left: 10px;
+    right: 10px;
+    bottom: 12px;
   }
 
   .toast {
     width: 100%;
-    font-size: 0.8125rem;
-    padding: 12px;
+    font-size: 0.78rem;
+    padding: 10px;
   }
 }

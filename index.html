@@ -56,15 +56,37 @@
 
         <!-- Category Select Filter -->
         <div class="input-group">
-          <label for="category-select" class="input-label">Filter by Category</label>
-          <select id="category-select" class="form-control" aria-label="Filter events by category">
-            <option value="ALL">All Event Categories</option>
-            <option value="Author Reading">Author Readings</option>
-            <option value="Book Club">Book Clubs</option>
-            <option value="Writing Workshop">Writing Workshops</option>
-            <option value="Children Storytime">Children's Storytime</option>
-            <option value="Poetry Open Mic">Poetry Nights</option>
-          </select>
+          <label id="category-select-label" for="category-select-trigger" class="input-label">Filter by Category</label>
+          <div class="custom-select-container" id="custom-category-select">
+            <button 
+              type="button" 
+              id="category-select-trigger" 
+              class="form-control custom-select-trigger" 
+              aria-haspopup="listbox" 
+              aria-expanded="false" 
+              aria-labelledby="category-select-label category-select-trigger"
+            >
+              <span class="selected-text" id="selected-category-text">All Event Categories</span>
+              <span class="select-arrow" aria-hidden="true">▾</span>
+            </button>
+            <div class="custom-select-dropdown hidden" role="listbox" id="category-dropdown-list" aria-labelledby="category-select-label">
+              <div class="custom-option active" role="option" data-value="ALL" aria-selected="true" tabindex="0">All Event Categories</div>
+              <div class="custom-option" role="option" data-value="Author Reading" aria-selected="false" tabindex="0">Author Readings</div>
+              <div class="custom-option" role="option" data-value="Book Club" aria-selected="false" tabindex="0">Book Clubs</div>
+              <div class="custom-option" role="option" data-value="Writing Workshop" aria-selected="false" tabindex="0">Writing Workshops</div>
+              <div class="custom-option" role="option" data-value="Children Storytime" aria-selected="false" tabindex="0">Children's Storytime</div>
+              <div class="custom-option" role="option" data-value="Poetry Open Mic" aria-selected="false" tabindex="0">Poetry Nights</div>
+            </div>
+            <!-- Hidden native select for state synchronization & screen reader fallback -->
+            <select id="category-select" class="form-control hidden-select" aria-hidden="true" tabindex="-1">
+              <option value="ALL">All Event Categories</option>
+              <option value="Author Reading">Author Readings</option>
+              <option value="Book Club">Book Clubs</option>
+              <option value="Writing Workshop">Writing Workshops</option>
+              <option value="Children Storytime">Children's Storytime</option>
+              <option value="Poetry Open Mic">Poetry Nights</option>
+            </select>
+          </div>
         </div>
       </div>
 

@@ -99,6 +99,13 @@
   const simSlowBtn = document.getElementById('sim-slow-btn');
   const eventCountBadge = document.getElementById('event-count-badge');
 
+  // Custom Select References
+  const customSelectContainer = document.getElementById('custom-category-select');
+  const categorySelectTrigger = document.getElementById('category-select-trigger');
+  const categoryDropdownList = document.getElementById('category-dropdown-list');
+  const selectedCategoryText = document.getElementById('selected-category-text');
+  const customOptions = document.querySelectorAll('.custom-option');
+
   // Modal References
   const rsvpModal = document.getElementById('rsvp-modal');
   const rsvpForm = document.getElementById('rsvp-form');
@@ -238,10 +245,43 @@
     triggerAsyncUpdate(renderEvents, 300);
   }
 
+  // --- Custom Select Dropdown Helpers ---
+  function toggleCustomDropdown() {
+    const isOpen = customSelectContainer.classList.contains('open');
+    if (isOpen) {
+      closeCustomDropdown();
+    } else {
+      customSelectContainer.classList.add('open');
+      categoryDropdownList.classList.remove('hidden');
+      categorySelectTrigger.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  function closeCustomDropdown() {
+    customSelectContainer.classList.remove('open');
+    categoryDropdownList.classList.add('hidden');
+    categorySelectTrigger.setAttribute('aria-expanded', 'false');
+  }
+
   function handleCategoryChange(category) {
     activeCategory = category;
     categorySelect.value = category;
 
+    // Update Custom Select UI
+    const matchingOption = Array.from(customOptions).find(opt => opt.getAttribute('data-value') === category);
+    if (matchingOption) {
+      selectedCategoryText.textContent = matchingOption.textContent;
+    }
+
+    customOptions.forEach(opt => {
+      const isMatch = opt.getAttribute('data-value') === category;
+      opt.classList.toggle('active', isMatch);
+      opt.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+    });
+
+    closeCustomDropdown();
+
+    // Sync Category Pills
     pillBtns.forEach(btn => {
       const isMatch = btn.getAttribute('data-category') === category;
       btn.classList.toggle('active', isMatch);
@@ -258,12 +298,20 @@
     searchInput.value = '';
     categorySelect.value = 'ALL';
     
+    selectedCategoryText.textContent = 'All Event Categories';
+    customOptions.forEach(opt => {
+      const isAll = opt.getAttribute('data-value') === 'ALL';
+      opt.classList.toggle('active', isAll);
+      opt.setAttribute('aria-selected', isAll ? 'true' : 'false');
+    });
+
     pillBtns.forEach(btn => {
       const isAll = btn.getAttribute('data-category') === 'ALL';
       btn.classList.toggle('active', isAll);
       btn.setAttribute('aria-selected', isAll ? 'true' : 'false');
     });
 
+    closeCustomDropdown();
     logTelemetry('Filters Reset', {});
     triggerAsyncUpdate(renderEvents, 400);
   }
@@ -381,6 +429,38 @@
     searchInput.addEventListener('input', handleSearchInput);
     categorySelect.addEventListener('change', (e) => handleCategoryChange(e.target.value));
 
+    // Custom Select Component Events
+    if (categorySelectTrigger && categoryDropdownList) {
+      categorySelectTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleCustomDropdown();
+      });
+
+      customOptions.forEach(opt => {
+        opt.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const val = opt.getAttribute('data-value');
+          handleCategoryChange(val);
+        });
+
+        opt.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            e.stopPropagation();
+            const val = opt.getAttribute('data-value');
+            handleCategoryChange(val);
+          }
+        });
+      });
+
+      // Close custom dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (customSelectContainer && !customSelectContainer.contains(e.target)) {
+          closeCustomDropdown();
+        }
+      });
+    }
+
     pillBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const cat = btn.getAttribute('data-category');
@@ -399,10 +479,15 @@
     closeModalBtn.addEventListener('click', closeRSVPModal);
     cancelModalBtn.addEventListener('click', closeRSVPModal);
 
-    // Keyboard ESC to close modal
+    // Keyboard ESC to close modal & custom dropdown
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !rsvpModal.classList.contains('hidden')) {
-        closeRSVPModal();
+      if (e.key === 'Escape') {
+        if (categoryDropdownList && !categoryDropdownList.classList.contains('hidden')) {
+          closeCustomDropdown();
+        }
+        if (rsvpModal && !rsvpModal.classList.contains('hidden')) {
+          closeRSVPModal();
+        }
       }
     });
 
