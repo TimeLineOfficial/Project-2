@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Independent Bookstore Events Page - Staff Event Portal &amp; RSVP System">
+  <title>Independent Bookstore Events Portal</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Skip link for keyboard accessibility -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Top Navigation / Header -->
+  <header class="app-header" role="banner">
+    <div class="container header-content">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">📖</div>
+        <div>
+          <h1 class="brand-title">CHAPTER &amp; VERSE</h1>
+          <p class="brand-subtitle">Independent Bookstore Events Portal</p>
+        </div>
+      </div>
+      <div class="header-status">
+        <span class="status-badge" id="network-status" aria-live="polite">
+          <span class="status-dot" aria-hidden="true"></span> System Online
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="main-content" class="container main-layout" role="main">
+    
+    <!-- Controls & Filters Section -->
+    <section class="controls-card" aria-labelledby="filter-heading">
+      <div class="controls-header">
+        <h2 id="filter-heading" class="section-title">Bookstore Events Directory</h2>
+        <p class="section-desc">Search, filter, and manage staff floor registrations for upcoming bookstore gatherings.</p>
+      </div>
+
+      <div class="search-filter-grid">
+        <!-- Search Input -->
+        <div class="input-group">
+          <label for="search-input" class="input-label">Search Events</label>
+          <div class="search-wrapper">
+            <input 
+              type="search" 
+              id="search-input" 
+              class="form-control" 
+              placeholder="Search title, author, or keyword..."
+              aria-label="Search bookstore events by title or author"
+            >
+          </div>
+        </div>
+
+        <!-- Category Select Filter -->
+        <div class="input-group">
+          <label for="category-select" class="input-label">Filter by Category</label>
+          <select id="category-select" class="form-control" aria-label="Filter events by category">
+            <option value="ALL">All Event Categories</option>
+            <option value="Author Reading">Author Readings</option>
+            <option value="Book Club">Book Clubs</option>
+            <option value="Writing Workshop">Writing Workshops</option>
+            <option value="Children Storytime">Children's Storytime</option>
+            <option value="Poetry Open Mic">Poetry Nights</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Quick Category Pills -->
+      <div class="category-pills" role="tablist" aria-label="Quick Category Filter">
+        <button type="button" class="pill-btn active" data-category="ALL" role="tab" aria-selected="true">All</button>
+        <button type="button" class="pill-btn" data-category="Author Reading" role="tab" aria-selected="false">Author Readings</button>
+        <button type="button" class="pill-btn" data-category="Book Club" role="tab" aria-selected="false">Book Clubs</button>
+        <button type="button" class="pill-btn" data-category="Writing Workshop" role="tab" aria-selected="false">Workshops</button>
+        <button type="button" class="pill-btn" data-category="Children Storytime" role="tab" aria-selected="false">Children</button>
+      </div>
+    </section>
+
+    <!-- Async Loading Indicator -->
+    <div id="loading-spinner" class="loading-overlay hidden" aria-live="assertive" aria-label="Loading events data">
+      <div class="spinner-box">
+        <div class="spinner"></div>
+        <p class="spinner-text">Simulating 3G Network Fetch...</p>
+      </div>
+    </div>
+
+    <!-- Events List Grid Container -->
+    <section class="events-section" aria-labelledby="events-heading">
+      <div class="events-header">
+        <h3 id="events-heading" class="events-count-title">
+          Upcoming Events <span id="event-count-badge" class="count-badge">0</span>
+        </h3>
+        <button type="button" id="sim-slow-btn" class="btn btn-secondary btn-sm" aria-label="Simulate slow network connection">
+          Simulate 3G Network Delay
+        </button>
+      </div>
+
+      <!-- Empty State View -->
+      <div id="empty-state" class="empty-state-card hidden" role="region" aria-live="polite">
+        <div class="empty-icon" aria-hidden="true">🔍</div>
+        <h4 class="empty-title">No Bookstore Events Found</h4>
+        <p class="empty-desc">We couldn't find any events matching your search or category criteria.</p>
+        <button type="button" id="reset-filters-btn" class="btn btn-primary" aria-label="Reset all search filters">
+          Reset Search &amp; Filters
+        </button>
+      </div>
+
+      <!-- Dynamic Events Grid -->
+      <div id="events-grid" class="events-grid" role="list">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Event Registration Modal Dialog -->
+  <div id="rsvp-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="modal-badge">Staff Event Registration</span>
+          <h3 id="modal-title" class="modal-title">RSVP for Event</h3>
+        </div>
+        <button type="button" id="close-modal-btn" class="close-btn" aria-label="Close registration modal">✕</button>
+      </div>
+
+      <form id="rsvp-form" class="modal-body" novalidate>
+        <input type="hidden" id="event-id-input">
+
+        <div id="event-summary-box" class="event-summary-box">
+          <!-- Filled dynamically -->
+        </div>
+
+        <!-- Form Validation Error Alert -->
+        <div id="form-error-alert" class="alert alert-error hidden" role="alert" aria-live="assertive">
+          <span aria-hidden="true">⚠️</span> Please correct the highlighted errors before submitting.
+        </div>
+
+        <!-- Full Name -->
+        <div class="input-group">
+          <label for="attendee-name" class="input-label">Attendee Full Name <span class="required">*</span></label>
+          <input 
+            type="text" 
+            id="attendee-name" 
+            name="attendeeName" 
+            class="form-control" 
+            placeholder="e.g. Jane Doe"
+            required
+            aria-required="true"
+          >
+          <span id="name-error" class="error-msg hidden">Full name is required (minimum 2 characters).</span>
+        </div>
+
+        <!-- Email Address -->
+        <div class="input-group">
+          <label for="attendee-email" class="input-label">Email Address <span class="required">*</span></label>
+          <input 
+            type="email" 
+            id="attendee-email" 
+            name="attendeeEmail" 
+            class="form-control" 
+            placeholder="jane.doe@example.com"
+            required
+            aria-required="true"
+          >
+          <span id="email-error" class="error-msg hidden">Please enter a valid email address.</span>
+        </div>
+
+        <!-- Attendees Count -->
+        <div class="input-group">
+          <label for="attendees-count" class="input-label">Number of Tickets / Seats <span class="required">*</span></label>
+          <input 
+            type="number" 
+            id="attendees-count" 
+            name="attendeesCount" 
+            class="form-control" 
+            min="1" 
+            max="10" 
+            value="1"
+            required
+            aria-required="true"
+          >
+          <span id="count-error" class="error-msg hidden">Please select between 1 and 10 tickets.</span>
+        </div>
+
+        <!-- Special Requests / Notes (XSS Tested) -->
+        <div class="input-group">
+          <label for="attendee-notes" class="input-label">Special Requests or Accessibility Notes</label>
+          <textarea 
+            id="attendee-notes" 
+            name="attendeeNotes" 
+            class="form-control" 
+            rows="3" 
+            placeholder="e.g. Wheelchair seating required, sign language interpretation..."
+          ></textarea>
+          <p class="input-help">All inputs are sanitized against XSS before submission.</p>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="cancel-modal-btn" class="btn btn-secondary" aria-label="Cancel registration">Cancel</button>
+          <button type="submit" id="submit-rsvp-btn" class="btn btn-primary" aria-label="Confirm event registration">Confirm Registration</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Success Confirmation Toast Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Corporate Footer -->
+  <footer class="app-footer" role="contentinfo">
+    <div class="container footer-content">
+      <p>© 2026 Chapter &amp; Verse Independent Bookstore System • Monochromatic Corporate NFR Certified</p>
+      <p class="footer-sub">100% WCAG AAA Compliant • Sanitized State Telemetry Active</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
