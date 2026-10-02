@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="description" content="Independent Bookstore Events Page - Staff Event Portal &amp; RSVP System">
   <title>Independent Bookstore Events Portal</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=3.0">
 </head>
 <body>
   <!-- Skip link for keyboard accessibility -->
@@ -77,8 +77,8 @@
               <div class="custom-option" role="option" data-value="Children Storytime" aria-selected="false" tabindex="0">Children's Storytime</div>
               <div class="custom-option" role="option" data-value="Poetry Open Mic" aria-selected="false" tabindex="0">Poetry Nights</div>
             </div>
-            <!-- Hidden native select for state synchronization & screen reader fallback -->
-            <select id="category-select" class="form-control hidden-select" aria-hidden="true" tabindex="-1">
+            <!-- Hidden native select with inline style override for state synchronization & fallback -->
+            <select id="category-select" class="form-control hidden-select" style="display: none !important;" aria-hidden="true" tabindex="-1">
               <option value="ALL">All Event Categories</option>
               <option value="Author Reading">Author Readings</option>
               <option value="Book Club">Book Clubs</option>
@@ -233,11 +233,11 @@
   <!-- Corporate Footer -->
   <footer class="app-footer" role="contentinfo">
     <div class="container footer-content">
-      <p>© 2026 Chapter &amp; Verse Independent Bookstore System • Monochromatic Corporate NFR Certified</p>
+      <p>© 2026 Chapter &amp; Verse Independent Bookstore System • Monochromatic Corporate NFR Certified (v3.0 Updated)</p>
       <p class="footer-sub">100% WCAG AAA Compliant • Sanitized State Telemetry Active</p>
     </div>
   </footer>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=3.0"></script>
 </body>
 </html>
